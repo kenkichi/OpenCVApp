@@ -17,12 +17,14 @@
 		7AF0EC6916E238E10081085E /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7AF0EC6816E238E10081085E /* Default@2x.png */; };
 		7AF0EC6B16E238E10081085E /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7AF0EC6A16E238E10081085E /* Default-568h@2x.png */; };
 		7AF0EC6E16E238E10081085E /* MainStoryboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7AF0EC6C16E238E10081085E /* MainStoryboard.storyboard */; };
-		7AF0EC7116E238E10081085E /* CVViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7AF0EC7016E238E10081085E /* CVViewController.m */; };
+		7AF0EC7116E238E10081085E /* CVViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7AF0EC7016E238E10081085E /* CVViewController.mm */; };
 		7AF0EC7916E238E10081085E /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7AF0EC7816E238E10081085E /* SenTestingKit.framework */; };
 		7AF0EC7A16E238E10081085E /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7AF0EC5416E238E10081085E /* UIKit.framework */; };
 		7AF0EC7B16E238E10081085E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7AF0EC5616E238E10081085E /* Foundation.framework */; };
 		7AF0EC8316E238E10081085E /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 7AF0EC8116E238E10081085E /* InfoPlist.strings */; };
 		7AF0EC8616E238E10081085E /* OpenCVAppTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 7AF0EC8516E238E10081085E /* OpenCVAppTests.m */; };
+		7AF0EC9216E23DAE0081085E /* opencv2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7AF0EC9116E23DAE0081085E /* opencv2.framework */; };
+		7AF0EC9416E240B70081085E /* neko_tsubaki_blue_car.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7AF0EC9316E240B70081085E /* neko_tsubaki_blue_car.jpg */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -51,13 +53,16 @@
 		7AF0EC6A16E238E10081085E /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		7AF0EC6D16E238E10081085E /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/MainStoryboard.storyboard; sourceTree = "<group>"; };
 		7AF0EC6F16E238E10081085E /* CVViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CVViewController.h; sourceTree = "<group>"; };
-		7AF0EC7016E238E10081085E /* CVViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CVViewController.m; sourceTree = "<group>"; };
+		7AF0EC7016E238E10081085E /* CVViewController.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = CVViewController.mm; sourceTree = "<group>"; };
 		7AF0EC7716E238E10081085E /* OpenCVAppTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = OpenCVAppTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
 		7AF0EC7816E238E10081085E /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
 		7AF0EC8016E238E10081085E /* OpenCVAppTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "OpenCVAppTests-Info.plist"; sourceTree = "<group>"; };
 		7AF0EC8216E238E10081085E /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		7AF0EC8416E238E10081085E /* OpenCVAppTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OpenCVAppTests.h; sourceTree = "<group>"; };
 		7AF0EC8516E238E10081085E /* OpenCVAppTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OpenCVAppTests.m; sourceTree = "<group>"; };
+		7AF0EC8F16E23D6C0081085E /* opencv2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = opencv2.framework; path = ../../src/opencv_ios/opencv2.framework; sourceTree = "<group>"; };
+		7AF0EC9116E23DAE0081085E /* opencv2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = opencv2.framework; path = ../../src/opencv_ios/opencv2.framework; sourceTree = "<group>"; };
+		7AF0EC9316E240B70081085E /* neko_tsubaki_blue_car.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = neko_tsubaki_blue_car.jpg; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -68,6 +73,7 @@
 				7AF0EC5516E238E10081085E /* UIKit.framework in Frameworks */,
 				7AF0EC5716E238E10081085E /* Foundation.framework in Frameworks */,
 				7AF0EC5916E238E10081085E /* CoreGraphics.framework in Frameworks */,
+				7AF0EC9216E23DAE0081085E /* opencv2.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -87,6 +93,7 @@
 		7AF0EC4816E238E10081085E = {
 			isa = PBXGroup;
 			children = (
+				7AF0EC8F16E23D6C0081085E /* opencv2.framework */,
 				7AF0EC5A16E238E10081085E /* OpenCVApp */,
 				7AF0EC7E16E238E10081085E /* OpenCVAppTests */,
 				7AF0EC5316E238E10081085E /* Frameworks */,
@@ -106,6 +113,7 @@
 		7AF0EC5316E238E10081085E /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				7AF0EC9116E23DAE0081085E /* opencv2.framework */,
 				7AF0EC5416E238E10081085E /* UIKit.framework */,
 				7AF0EC5616E238E10081085E /* Foundation.framework */,
 				7AF0EC5816E238E10081085E /* CoreGraphics.framework */,
@@ -117,11 +125,12 @@
 		7AF0EC5A16E238E10081085E /* OpenCVApp */ = {
 			isa = PBXGroup;
 			children = (
+				7AF0EC9316E240B70081085E /* neko_tsubaki_blue_car.jpg */,
 				7AF0EC6316E238E10081085E /* CVAppDelegate.h */,
 				7AF0EC6416E238E10081085E /* CVAppDelegate.m */,
 				7AF0EC6C16E238E10081085E /* MainStoryboard.storyboard */,
 				7AF0EC6F16E238E10081085E /* CVViewController.h */,
-				7AF0EC7016E238E10081085E /* CVViewController.m */,
+				7AF0EC7016E238E10081085E /* CVViewController.mm */,
 				7AF0EC5B16E238E10081085E /* Supporting Files */,
 			);
 			path = OpenCVApp;
@@ -237,6 +246,7 @@
 				7AF0EC6916E238E10081085E /* Default@2x.png in Resources */,
 				7AF0EC6B16E238E10081085E /* Default-568h@2x.png in Resources */,
 				7AF0EC6E16E238E10081085E /* MainStoryboard.storyboard in Resources */,
+				7AF0EC9416E240B70081085E /* neko_tsubaki_blue_car.jpg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -273,7 +283,7 @@
 			files = (
 				7AF0EC6116E238E10081085E /* main.m in Sources */,
 				7AF0EC6516E238E10081085E /* CVAppDelegate.m in Sources */,
-				7AF0EC7116E238E10081085E /* CVViewController.m in Sources */,
+				7AF0EC7116E238E10081085E /* CVViewController.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -382,6 +392,10 @@
 		7AF0EC8A16E238E10081085E /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/../../src/opencv_ios\"",
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "OpenCVApp/OpenCVApp-Prefix.pch";
 				INFOPLIST_FILE = "OpenCVApp/OpenCVApp-Info.plist";
@@ -393,6 +407,10 @@
 		7AF0EC8B16E238E10081085E /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/../../src/opencv_ios\"",
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "OpenCVApp/OpenCVApp-Prefix.pch";
 				INFOPLIST_FILE = "OpenCVApp/OpenCVApp-Info.plist";

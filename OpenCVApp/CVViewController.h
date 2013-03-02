@@ -9,5 +9,6 @@
 #import <UIKit/UIKit.h>
 
 @interface CVViewController : UIViewController
-
+- (IBAction)doDidPress:(id)sender;
+@property (weak, nonatomic) IBOutlet UIImageView *imageView;
 @end
