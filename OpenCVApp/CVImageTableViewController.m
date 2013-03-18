@@ -54,7 +54,7 @@
 //    cinfo.input_components = 3;
 //    cinfo.in_color_space = JCS_RGB;
     jpeg_set_defaults(&cinfo);
-    jpeg_set_quality(&cinfo, 75, TRUE);
+    jpeg_set_quality(&cinfo, 10, TRUE);
     
     /* 圧縮開始 */
     jpeg_start_compress(&cinfo, TRUE);
@@ -90,15 +90,15 @@
 }
 
 - (IBAction)takePhoto:(id)sender {
-//    // カメラを起動
-//    UIImagePickerController *imagePicker;
-//    imagePicker = [[UIImagePickerController alloc] init];
-//    imagePicker.sourceType = UIImagePickerControllerSourceTypeCamera;
-//    imagePicker.delegate = self;
-//    [self presentViewController:imagePicker
-//                       animated:YES
-//                     completion:nil];
-    [self libjpeg_test];
+    // カメラを起動
+    UIImagePickerController *imagePicker;
+    imagePicker = [[UIImagePickerController alloc] init];
+    imagePicker.sourceType = UIImagePickerControllerSourceTypeCamera;
+    imagePicker.delegate = self;
+    [self presentViewController:imagePicker
+                       animated:YES
+                     completion:nil];
+//    [self libjpeg_test];
 }
 
 - (NSArray *)pictures
@@ -120,24 +120,20 @@
 {
     // 撮影した画像を取得し、
     UIImage *image = [info objectForKey:UIImagePickerControllerOriginalImage];
-    // カメラロールに保存する
-    NSData *data = UIImageJPEGRepresentation(image, 0.0);
+//    NSData *data = UIImageJPEGRepresentation(image, 0.0);
+    
+    // Documentsディレクトリへ保存する
     NSUUID *uuid = [NSUUID UUID];
     NSString *fileName = [NSString stringWithFormat:@"%@.jpg", [uuid UUIDString]];
-    NSFileManager *fm = [NSFileManager defaultManager];
-    NSURL *documentRoot = [[fm URLsForDirectory:NSDocumentDirectory
-                             inDomains:NSUserDomainMask] objectAtIndex:0];
-    NSURL *url = [documentRoot URLByAppendingPathComponent:fileName];
-    [data writeToURL:url atomically:YES];
-
+//    NSFileManager *fm = [NSFileManager defaultManager];
+//    NSURL *documentRoot = [[fm URLsForDirectory:NSDocumentDirectory
+//                             inDomains:NSUserDomainMask] objectAtIndex:0];
+//    NSURL *url = [documentRoot URLByAppendingPathComponent:fileName];
+//    [data writeToURL:url atomically:YES];
+    UIImageWriteGrayscaleToDocuments(image, fileName, self.tableView, @selector(reloadData));
+    
     // カメラを閉じる
     [self dismissViewControllerAnimated:YES completion:nil];
-
-    // 別スレッドでリロード
-    NSOperationQueue *q = [NSOperationQueue mainQueue];
-    [q addOperationWithBlock:^{
-        [self.tableView reloadData];
-    }];
 }
 
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker
@@ -260,3 +256,73 @@
 }
 
 @end
+
+void UIImageWriteGrayscaleToDocuments(UIImage *image, NSString *fileName, id completionTarget, SEL completionSelector)
+{    
+    /* 画像のパラメータの設定 */
+    int width = 256;
+    int height = 256;
+    
+    /* JPEGオブジェクト, エラーハンドラの確保 */
+    struct jpeg_compress_struct cinfo;
+    struct jpeg_error_mgr jpeg_err;
+    
+    /* エラーハンドラにデフォルト値を設定 */
+    cinfo.err = jpeg_std_error(&jpeg_err);
+    
+    /* JPEGオブジェクトの初期化 */
+    jpeg_create_compress(&cinfo);
+    
+    /* 出力ファイルの設定 */
+    NSFileManager *fm = [NSFileManager defaultManager];
+    NSURL *documentRoot = [[fm URLsForDirectory:NSDocumentDirectory
+                                      inDomains:NSUserDomainMask] objectAtIndex:0];
+    NSURL *url = [documentRoot URLByAppendingPathComponent:fileName];
+    NSString *path = [url path];
+    const char *filename = [path cStringUsingEncoding:NSUTF8StringEncoding];
+    FILE *fp = fopen(filename, "wb");
+    if (fp == NULL) {
+        fprintf(stderr, "cannot open %s\n", filename);
+        exit(EXIT_FAILURE);
+    }
+    jpeg_stdio_dest(&cinfo, fp);
+    
+    cinfo.image_width = width;
+    cinfo.image_height = height;
+    cinfo.input_components = 1;
+    cinfo.in_color_space = JCS_GRAYSCALE;
+    //    cinfo.input_components = 3;
+    //    cinfo.in_color_space = JCS_RGB;
+    jpeg_set_defaults(&cinfo);
+    jpeg_set_quality(&cinfo, 10, TRUE);
+    
+    /* 圧縮開始 */
+    jpeg_start_compress(&cinfo, TRUE);
+    
+    /* RGB値の設定 */
+    JSAMPARRAY img = (JSAMPARRAY) malloc(sizeof(JSAMPROW) * height);
+    for (int i = 0; i < height; i++) {
+        img[i] = (JSAMPROW) malloc(sizeof(JSAMPLE) * width);
+        for (int j = 0; j < width; j++) {
+            img[i][j] = i;
+        }
+    }
+    
+    /* 書き込む */
+    jpeg_write_scanlines(&cinfo, img, height);
+    
+    /* 圧縮終了 */
+    jpeg_finish_compress(&cinfo);
+    
+    /* JPEGオブジェクトの破棄 */
+    jpeg_destroy_compress(&cinfo);
+    
+    for (int i = 0; i < height; i++) {
+        free(img[i]);
+    }
+    free(img);
+    fclose(fp);
+    
+    // completionHandlerを実行
+    [completionTarget performSelector:completionSelector withObject:nil afterDelay:0.0f];
+}

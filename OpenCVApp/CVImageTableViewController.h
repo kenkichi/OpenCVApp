@@ -12,3 +12,5 @@
 - (IBAction)takePhoto:(id)sender;
 
 @end
+
+void UIImageWriteGrayscaleToDocuments(UIImage *image, NSString *fileName, id target, SEL selector);
