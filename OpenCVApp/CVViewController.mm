@@ -8,6 +8,9 @@
 
 #import "CVViewController.h"
 
+static NSString *IMAGE_NAME = @"memo.jpg";
+//static NSString *IMAGE_NAME = @"neko_tsubaki_blue_car.jpg";
+
 @interface CVViewController ()
 
 @end
@@ -17,7 +20,16 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-	// Do any additional setup after loading the view, typically from a nib.
+	// Do any additional setup after loading the view, typically from a nib.    
+}
+
+- (void)viewDidLayoutSubviews
+{
+    // デフォルトの画像を表示
+    UIImage *image = [UIImage imageNamed:IMAGE_NAME];
+    self.imageView.image = image;
+    
+    [self printSizeOf:image];
 }
 
 - (void)didReceiveMemoryWarning
@@ -87,16 +99,42 @@
     return finalImage;
 }
 
-
-- (IBAction)doDidPress:(id)sender {
-    UIImage *image = [UIImage imageNamed:@"neko_tsubaki_blue_car.jpg"];
-
-    // 写真をモノクロにする
+- (UIImage *)monoclo:(UIImage *)image {
     cv::Mat srcMat = [self cvMatFromUIImage:image];
     cv::Mat greyMat;
     cv::cvtColor(srcMat, greyMat, CV_BGR2GRAY);
     UIImage *greyImage = [self UIImageFromCVMat:greyMat];
+    return greyImage;
+}
+
+- (UIImage *)binalize:(UIImage *)image {
+    cv::Mat srcMat = [self cvMatFromUIImage:image];
+    cv::Mat greyMat;
+    cv::cvtColor(srcMat, greyMat, CV_BGR2GRAY);
+    cv::threshold(greyMat, greyMat, 128, 255, CV_THRESH_BINARY);
+    UIImage *greyImage = [self UIImageFromCVMat:greyMat];
+    return greyImage;
+}
+
+- (IBAction)doDidPress:(id)sender {
+    UIImage *image = [UIImage imageNamed:IMAGE_NAME];
+
+    UIImage *greyImage = [self binalize:image];
+//    UIImage *greyImage = [self monoclo:image];
 
     self.imageView.image = greyImage;
+    
+    [self printSizeOf:greyImage];
 }
+
+- (void)printSizeOf:(UIImage *)image
+{
+    NSData *data;
+    data = UIImageJPEGRepresentation(image, 0.0);
+    NSLog(@"jpeg size: %d", [data length]);
+
+    data = UIImagePNGRepresentation(image);
+    NSLog(@"png size: %d", [data length]);
+}
+
 @end
