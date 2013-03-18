@@ -25,6 +25,19 @@
                      completion:nil];
 }
 
+- (NSArray *)pictures
+{
+    NSArray *dirs = nil;
+    NSFileManager *fm = [NSFileManager defaultManager];
+    NSURL *documentsDir = [[fm URLsForDirectory:NSDocumentDirectory
+                                      inDomains:NSUserDomainMask] objectAtIndex:0];
+    dirs = [fm contentsOfDirectoryAtURL:documentsDir
+             includingPropertiesForKeys:nil
+                                options:0
+                                  error:nil];
+    return dirs;
+}
+
 #pragma mark - UIImagePickerControllerDelegate
 
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info
@@ -43,6 +56,12 @@
 
     // カメラを閉じる
     [self dismissViewControllerAnimated:YES completion:nil];
+
+    // 別スレッドでリロード
+    NSOperationQueue *q = [NSOperationQueue mainQueue];
+    [q addOperationWithBlock:^{
+        [self.tableView reloadData];
+    }];
 }
 
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker
@@ -88,9 +107,7 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-#warning Incomplete method implementation.
-    // Return the number of rows in the section.
-    return 0;
+    return [[self pictures] count];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -99,6 +116,12 @@
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
     
     // Configure the cell...
+    NSURL *imageURL = [[self pictures] objectAtIndex:indexPath.row];
+
+    NSData *data = [NSData dataWithContentsOfURL:imageURL];
+    UIImage *image = [UIImage imageWithData:data];
+    cell.imageView.image = image;
+    cell.textLabel.text = [NSString stringWithFormat:@"%d", [data length]];
     
     return cell;
 }
@@ -112,19 +135,24 @@
 }
 */
 
-/*
 // Override to support editing the table view.
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         // Delete the row from the data source
-        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-    }   
+        NSFileManager *fm = [NSFileManager defaultManager];
+        NSURL *imageURL = [[self pictures] objectAtIndex:indexPath.row];
+        [fm removeItemAtURL:imageURL error:nil];
+        // ファイルの削除が終わった頃にテーブルをリロード
+        NSOperationQueue *q = [NSOperationQueue mainQueue];
+        [q addOperationWithBlock:^{
+            [self.tableView reloadData];
+        }];
+    }
     else if (editingStyle == UITableViewCellEditingStyleInsert) {
         // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
     }   
 }
-*/
 
 /*
 // Override to support rearranging the table view.
