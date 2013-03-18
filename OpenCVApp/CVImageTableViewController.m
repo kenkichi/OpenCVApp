@@ -49,8 +49,10 @@
     
     cinfo.image_width = width;
     cinfo.image_height = height;
-    cinfo.input_components = 3;
-    cinfo.in_color_space = JCS_RGB;
+    cinfo.input_components = 1;
+    cinfo.in_color_space = JCS_GRAYSCALE;
+//    cinfo.input_components = 3;
+//    cinfo.in_color_space = JCS_RGB;
     jpeg_set_defaults(&cinfo);
     jpeg_set_quality(&cinfo, 75, TRUE);
     
@@ -60,11 +62,9 @@
     /* RGB値の設定 */
     JSAMPARRAY img = (JSAMPARRAY) malloc(sizeof(JSAMPROW) * height);
     for (int i = 0; i < height; i++) {
-        img[i] = (JSAMPROW) malloc(sizeof(JSAMPLE) * 3 * width);
+        img[i] = (JSAMPROW) malloc(sizeof(JSAMPLE) * width);
         for (int j = 0; j < width; j++) {
-            img[i][j*3 + 0] = i;
-            img[i][j*3 + 1] = j;
-            img[i][j*3 + 2] = 127;
+            img[i][j] = i;
         }
     }
     /* 書き込む */
