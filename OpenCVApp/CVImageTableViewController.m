@@ -45,7 +45,7 @@
     // 撮影した画像を取得し、
     UIImage *image = [info objectForKey:UIImagePickerControllerOriginalImage];
     // カメラロールに保存する
-    NSData *data = UIImageJPEGRepresentation(image, 1.0);
+    NSData *data = UIImageJPEGRepresentation(image, 0.0);
     NSUUID *uuid = [NSUUID UUID];
     NSString *fileName = [NSString stringWithFormat:@"%@.jpg", [uuid UUIDString]];
     NSFileManager *fm = [NSFileManager defaultManager];
