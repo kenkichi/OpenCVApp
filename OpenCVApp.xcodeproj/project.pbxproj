@@ -173,7 +173,6 @@
 		7AF0EC8216E238E10081085E /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		7AF0EC8416E238E10081085E /* OpenCVAppTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OpenCVAppTests.h; sourceTree = "<group>"; };
 		7AF0EC8516E238E10081085E /* OpenCVAppTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OpenCVAppTests.m; sourceTree = "<group>"; };
-		7AF0EC8F16E23D6C0081085E /* opencv2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = opencv2.framework; path = ../opencv_ios/opencv2.framework; sourceTree = "<group>"; };
 		7AF0EC9116E23DAE0081085E /* opencv2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = opencv2.framework; path = ../../src/opencv_ios/opencv2.framework; sourceTree = "<group>"; };
 		7AF0EC9316E240B70081085E /* neko_tsubaki_blue_car.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = neko_tsubaki_blue_car.jpg; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -295,7 +294,6 @@
 			isa = PBXGroup;
 			children = (
 				7AA90C9916F7F50A00BBCC9E /* libjpeg */,
-				7AF0EC8F16E23D6C0081085E /* opencv2.framework */,
 				7AF0EC9116E23DAE0081085E /* opencv2.framework */,
 				7AF0EC5416E238E10081085E /* UIKit.framework */,
 				7AF0EC5616E238E10081085E /* Foundation.framework */,
