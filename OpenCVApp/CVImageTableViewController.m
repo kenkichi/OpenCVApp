@@ -258,7 +258,7 @@
 @end
 
 void UIImageWriteGrayscaleToDocuments(UIImage *image, NSString *fileName, id completionTarget, SEL completionSelector)
-{    
+{
     /* 画像のパラメータの設定 */
     int width = 256;
     int height = 256;
@@ -323,6 +323,52 @@ void UIImageWriteGrayscaleToDocuments(UIImage *image, NSString *fileName, id com
     free(img);
     fclose(fp);
     
+    // 撮影した画像の情報を取得してみる
+    test(image);
+    
     // completionHandlerを実行
     [completionTarget performSelector:completionSelector withObject:nil afterDelay:0.0f];
+}
+
+void test(UIImage *img) {    
+    // pixel値の抽出
+    CGImageRef cgImage = [img CGImage];
+    size_t bytesPerRow = CGImageGetBytesPerRow(cgImage);
+    CGDataProviderRef dataProvider = CGImageGetDataProvider(cgImage);
+    CFDataRef data = CGDataProviderCopyData(dataProvider);
+    UInt8* pixels = (UInt8*)CFDataGetBytePtr(data);
+    
+    NSLog(@"width: %f", img.size.width);
+    NSLog(@"height: %f", img.size.height);
+
+//    // 画像処理（グレースケール化）
+//    for (int y = 0 ; y < img.size.height; y++){
+//        for (int x = 0; x < img.size.width; x++){
+//            UInt8* buf = pixels + y * bytesPerRow + x * 4;
+//            UInt8 r, g, b;
+//            r = *(buf + 0);
+//            g = *(buf + 1);
+//            b = *(buf + 2);
+//            UInt8 gray = (77 * r + 28 * g + 151 * b)>>8;
+//            *(buf + 0) = gray;
+//            *(buf + 1) = gray;
+//            *(buf + 2) = gray;
+//        }
+//    }
+//    
+//    // pixel値からUIImageの再合成
+//    CFDataRef resultData = CFDataCreate(NULL, pixels, CFDataGetLength(data));
+//    CGDataProviderRef resultDataProvider = CGDataProviderCreateWithCFData(resultData);
+//    CGImageRef resultCgImage = CGImageCreate(
+//                                             CGImageGetWidth(cgImage), CGImageGetHeight(cgImage),
+//                                             CGImageGetBitsPerComponent(cgImage), CGImageGetBitsPerPixel(cgImage), bytesPerRow,
+//                                             CGImageGetColorSpace(cgImage), CGImageGetBitmapInfo(cgImage), resultDataProvider,
+//                                             NULL, CGImageGetShouldInterpolate(cgImage), CGImageGetRenderingIntent(cgImage));
+//    UIImage* result = [[UIImage alloc] initWithCGImage:resultCgImage];
+//    
+//    // 後処理
+//    CGImageRelease(resultCgImage);
+//    CFRelease(resultDataProvider);
+//    CFRelease(resultData);
+//    CFRelease(data);
 }
