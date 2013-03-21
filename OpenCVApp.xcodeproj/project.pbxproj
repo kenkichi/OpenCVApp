@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		7A04081916F6CE7B0083F041 /* CVViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7AF0EC7016E238E10081085E /* CVViewController.mm */; };
 		7A04081C16F6DD5C0083F041 /* CVImageTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A04081B16F6DD5C0083F041 /* CVImageTableViewController.m */; };
+		7A0408D716FB572E0083F041 /* CVImageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A0408D616FB572E0083F041 /* CVImageViewController.m */; };
 		7AA90CD716F7F50A00BBCC9E /* CMakeLists.txt in Resources */ = {isa = PBXBuildFile; fileRef = 7AA90C9A16F7F50A00BBCC9E /* CMakeLists.txt */; };
 		7AA90CD816F7F50A00BBCC9E /* jcapimin.c in Sources */ = {isa = PBXBuildFile; fileRef = 7AA90C9B16F7F50A00BBCC9E /* jcapimin.c */; };
 		7AA90CD916F7F50A00BBCC9E /* jcapistd.c in Sources */ = {isa = PBXBuildFile; fileRef = 7AA90C9C16F7F50A00BBCC9E /* jcapistd.c */; };
@@ -90,6 +91,8 @@
 /* Begin PBXFileReference section */
 		7A04081A16F6DD5C0083F041 /* CVImageTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CVImageTableViewController.h; sourceTree = "<group>"; };
 		7A04081B16F6DD5C0083F041 /* CVImageTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CVImageTableViewController.m; sourceTree = "<group>"; };
+		7A0408D516FB572D0083F041 /* CVImageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CVImageViewController.h; sourceTree = "<group>"; };
+		7A0408D616FB572E0083F041 /* CVImageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CVImageViewController.m; sourceTree = "<group>"; };
 		7AA90C9A16F7F50A00BBCC9E /* CMakeLists.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = CMakeLists.txt; sourceTree = "<group>"; };
 		7AA90C9B16F7F50A00BBCC9E /* jcapimin.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = jcapimin.c; sourceTree = "<group>"; };
 		7AA90C9C16F7F50A00BBCC9E /* jcapistd.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = jcapistd.c; sourceTree = "<group>"; };
@@ -315,6 +318,8 @@
 				7A04081A16F6DD5C0083F041 /* CVImageTableViewController.h */,
 				7A04081B16F6DD5C0083F041 /* CVImageTableViewController.m */,
 				7AF0EC5B16E238E10081085E /* Supporting Files */,
+				7A0408D516FB572D0083F041 /* CVImageViewController.h */,
+				7A0408D616FB572E0083F041 /* CVImageViewController.m */,
 			);
 			path = OpenCVApp;
 			sourceTree = "<group>";
@@ -517,6 +522,7 @@
 				7AA90D0416F7F50A00BBCC9E /* jquant2.c in Sources */,
 				7AA90D0516F7F50A00BBCC9E /* jutils.c in Sources */,
 				7AA90D0716F7F50A00BBCC9E /* transupp.c in Sources */,
+				7A0408D716FB572E0083F041 /* CVImageViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

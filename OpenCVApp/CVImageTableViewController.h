@@ -13,5 +13,5 @@
 
 @end
 
+void UIImageWriteToDocuments(UIImage *image, NSString *fileName, id target, SEL selector);
 void UIImageWriteGrayscaleToDocuments(UIImage *image, NSString *fileName, id target, SEL selector);
-void test(UIImage *img);

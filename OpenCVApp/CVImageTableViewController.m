@@ -7,6 +7,7 @@
 //
 
 #import "CVImageTableViewController.h"
+#import "CVImageViewController.h"
 #import "jpeglib.h"
 
 @interface CVImageTableViewController () <UIImagePickerControllerDelegate, UINavigationControllerDelegate>
@@ -14,80 +15,6 @@
 @end
 
 @implementation CVImageTableViewController
-
-- (void)libjpeg_test
-{
-    /* JPEGオブジェクト, エラーハンドラの確保 */
-    struct jpeg_compress_struct cinfo;
-    struct jpeg_error_mgr jpeg_err;
-    
-    /* エラーハンドラにデフォルト値を設定 */
-    cinfo.err = jpeg_std_error(&jpeg_err);
-    
-    /* JPEGオブジェクトの初期化 */
-    jpeg_create_compress(&cinfo);
-    
-    /* 出力ファイルの設定 */
-    NSUUID *uuid = [NSUUID UUID];
-    NSString *fileName = [NSString stringWithFormat:@"%@.jpg", [uuid UUIDString]];
-    NSFileManager *fm = [NSFileManager defaultManager];
-    NSURL *documentRoot = [[fm URLsForDirectory:NSDocumentDirectory
-                                      inDomains:NSUserDomainMask] objectAtIndex:0];
-    NSURL *url = [documentRoot URLByAppendingPathComponent:fileName];
-    NSString *path = [url path];
-    const char *filename = [path cStringUsingEncoding:NSUTF8StringEncoding];
-    FILE *fp = fopen(filename, "wb");
-    if (fp == NULL) {
-        fprintf(stderr, "cannot open %s\n", filename);
-        exit(EXIT_FAILURE);
-    }
-    jpeg_stdio_dest(&cinfo, fp);
-    
-    /* 画像のパラメータの設定 */
-    int width = 256;
-    int height = 256;
-    
-    cinfo.image_width = width;
-    cinfo.image_height = height;
-    cinfo.input_components = 1;
-    cinfo.in_color_space = JCS_GRAYSCALE;
-//    cinfo.input_components = 3;
-//    cinfo.in_color_space = JCS_RGB;
-    jpeg_set_defaults(&cinfo);
-    jpeg_set_quality(&cinfo, 10, TRUE);
-    
-    /* 圧縮開始 */
-    jpeg_start_compress(&cinfo, TRUE);
-    
-    /* RGB値の設定 */
-    JSAMPARRAY img = (JSAMPARRAY) malloc(sizeof(JSAMPROW) * height);
-    for (int i = 0; i < height; i++) {
-        img[i] = (JSAMPROW) malloc(sizeof(JSAMPLE) * width);
-        for (int j = 0; j < width; j++) {
-            img[i][j] = i;
-        }
-    }
-    /* 書き込む */
-    jpeg_write_scanlines(&cinfo, img, height);
-    
-    /* 圧縮終了 */
-    jpeg_finish_compress(&cinfo);
-    
-    /* JPEGオブジェクトの破棄 */
-    jpeg_destroy_compress(&cinfo);
-    
-    for (int i = 0; i < height; i++) {
-        free(img[i]);
-    }
-    free(img);
-    fclose(fp);
-    
-    // 別スレッドでリロード
-    NSOperationQueue *q = [NSOperationQueue mainQueue];
-    [q addOperationWithBlock:^{
-        [self.tableView reloadData];
-    }];
-}
 
 - (IBAction)takePhoto:(id)sender {
     // カメラを起動
@@ -98,7 +25,6 @@
     [self presentViewController:imagePicker
                        animated:YES
                      completion:nil];
-//    [self libjpeg_test];
 }
 
 - (NSArray *)pictures
@@ -123,14 +49,15 @@
 //    NSData *data = UIImageJPEGRepresentation(image, 0.0);
     
     // Documentsディレクトリへ保存する
-    NSUUID *uuid = [NSUUID UUID];
-    NSString *fileName = [NSString stringWithFormat:@"%@.jpg", [uuid UUIDString]];
-//    NSFileManager *fm = [NSFileManager defaultManager];
-//    NSURL *documentRoot = [[fm URLsForDirectory:NSDocumentDirectory
-//                             inDomains:NSUserDomainMask] objectAtIndex:0];
-//    NSURL *url = [documentRoot URLByAppendingPathComponent:fileName];
-//    [data writeToURL:url atomically:YES];
+    NSString *fileName;
+    fileName = [NSString stringWithFormat:@"%@.jpg",
+                [[NSUUID UUID] UUIDString]];
     UIImageWriteGrayscaleToDocuments(image, fileName, self.tableView, @selector(reloadData));
+
+    fileName = [NSString stringWithFormat:@"%@.jpg",
+                [[NSUUID UUID] UUIDString]];
+    UIImageWriteToDocuments(image, fileName, self.tableView, @selector(reloadData));
+
     
     // カメラを閉じる
     [self dismissViewControllerAnimated:YES completion:nil];
@@ -255,13 +182,60 @@
      */
 }
 
+#pragma mark - segue
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue
+                 sender:(id)sender
+{
+    if ([[segue identifier] isEqualToString:@"showDetail"]) {
+        CVImageViewController *viewController;
+        viewController = [segue destinationViewController];
+        viewController.selectedPictureURL = [[self pictures] objectAtIndex:self.tableView.indexPathForSelectedRow.row];
+    }
+}
+
 @end
+
+NSData *rawData(UIImage *image)
+{
+    CGImageRef imageRef = [image CGImage];
+    NSUInteger width = CGImageGetWidth(imageRef);
+    NSUInteger height = CGImageGetHeight(imageRef);
+    
+    unsigned char *rawData = (unsigned char*) calloc(height * width * 4, sizeof(unsigned char));
+    NSUInteger bytesPerPixel = 4;
+    NSUInteger bytesPerRow = bytesPerPixel * width;
+    NSUInteger bitsPerComponent = 8;
+    
+    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+    CGContextRef context = CGBitmapContextCreate(rawData,
+                                                 width,
+                                                 height,
+                                                 bitsPerComponent,
+                                                 bytesPerRow,
+                                                 colorSpace,
+                                                 kCGImageAlphaPremultipliedLast |
+                                                 kCGBitmapByteOrder32Big);
+    CGContextDrawImage(context, CGRectMake(0, 0, width, height), imageRef);
+    
+    NSData *result = [NSData dataWithBytes:rawData
+                                    length:height * width * 4 * sizeof(unsigned char)];
+    
+    // we're done with the context, color space, and pixels
+    CGContextRelease(context);
+    CGColorSpaceRelease(colorSpace);
+    free(rawData);
+    
+    return result;
+}
 
 void UIImageWriteGrayscaleToDocuments(UIImage *image, NSString *fileName, id completionTarget, SEL completionSelector)
 {
-    /* 画像のパラメータの設定 */
-    int width = 256;
-    int height = 256;
+    CGImageRef imageRef = [image CGImage];
+    NSUInteger width = CGImageGetWidth(imageRef);
+    NSUInteger height = CGImageGetHeight(imageRef);
+    NSUInteger bytesPerPixel = 4;
+    NSUInteger bytesPerRow = bytesPerPixel * width;
     
     /* JPEGオブジェクト, エラーハンドラの確保 */
     struct jpeg_compress_struct cinfo;
@@ -299,12 +273,20 @@ void UIImageWriteGrayscaleToDocuments(UIImage *image, NSString *fileName, id com
     /* 圧縮開始 */
     jpeg_start_compress(&cinfo, TRUE);
     
-    /* RGB値の設定 */
+    /* JPEGへ書き出し */
+    NSData *d = rawData(image);
+    unsigned char *rawData = (unsigned char*)[d bytes];
+    
     JSAMPARRAY img = (JSAMPARRAY) malloc(sizeof(JSAMPROW) * height);
-    for (int i = 0; i < height; i++) {
-        img[i] = (JSAMPROW) malloc(sizeof(JSAMPLE) * width);
-        for (int j = 0; j < width; j++) {
-            img[i][j] = i;
+    
+    for (int y = 0; y < height; y++) {
+        img[y] = (JSAMPROW) malloc(sizeof(JSAMPLE) * width);
+        for (int x = 0; x < width; x++) {
+            int byteIndex = (bytesPerRow * y) + x * bytesPerPixel;
+            // グレイスケール化
+            // 参考: http://en.wikipedia.org/wiki/Grayscale#Converting_color_to_grayscale
+            unsigned char gray = rawData[byteIndex] * 0.3 + rawData[byteIndex + 1] * 0.59 + rawData[byteIndex + 2] * 0.11;
+            img[y][x] = gray;
         }
     }
     
@@ -322,53 +304,24 @@ void UIImageWriteGrayscaleToDocuments(UIImage *image, NSString *fileName, id com
     }
     free(img);
     fclose(fp);
-    
-    // 撮影した画像の情報を取得してみる
-    test(image);
-    
+
     // completionHandlerを実行
     [completionTarget performSelector:completionSelector withObject:nil afterDelay:0.0f];
 }
 
-void test(UIImage *img) {    
-    // pixel値の抽出
-    CGImageRef cgImage = [img CGImage];
-    size_t bytesPerRow = CGImageGetBytesPerRow(cgImage);
-    CGDataProviderRef dataProvider = CGImageGetDataProvider(cgImage);
-    CFDataRef data = CGDataProviderCopyData(dataProvider);
-    UInt8* pixels = (UInt8*)CFDataGetBytePtr(data);
-    
-    NSLog(@"width: %f", img.size.width);
-    NSLog(@"height: %f", img.size.height);
+void UIImageWriteToDocuments(UIImage *image, NSString *fileName, id completionTarget, SEL completionSelector)
+{
+    NSData *data = UIImageJPEGRepresentation(image, 0.75);
 
-//    // 画像処理（グレースケール化）
-//    for (int y = 0 ; y < img.size.height; y++){
-//        for (int x = 0; x < img.size.width; x++){
-//            UInt8* buf = pixels + y * bytesPerRow + x * 4;
-//            UInt8 r, g, b;
-//            r = *(buf + 0);
-//            g = *(buf + 1);
-//            b = *(buf + 2);
-//            UInt8 gray = (77 * r + 28 * g + 151 * b)>>8;
-//            *(buf + 0) = gray;
-//            *(buf + 1) = gray;
-//            *(buf + 2) = gray;
-//        }
-//    }
-//    
-//    // pixel値からUIImageの再合成
-//    CFDataRef resultData = CFDataCreate(NULL, pixels, CFDataGetLength(data));
-//    CGDataProviderRef resultDataProvider = CGDataProviderCreateWithCFData(resultData);
-//    CGImageRef resultCgImage = CGImageCreate(
-//                                             CGImageGetWidth(cgImage), CGImageGetHeight(cgImage),
-//                                             CGImageGetBitsPerComponent(cgImage), CGImageGetBitsPerPixel(cgImage), bytesPerRow,
-//                                             CGImageGetColorSpace(cgImage), CGImageGetBitmapInfo(cgImage), resultDataProvider,
-//                                             NULL, CGImageGetShouldInterpolate(cgImage), CGImageGetRenderingIntent(cgImage));
-//    UIImage* result = [[UIImage alloc] initWithCGImage:resultCgImage];
-//    
-//    // 後処理
-//    CGImageRelease(resultCgImage);
-//    CFRelease(resultDataProvider);
-//    CFRelease(resultData);
-//    CFRelease(data);
+    /* 出力ファイルの設定 */
+    NSFileManager *fm = [NSFileManager defaultManager];
+    NSURL *documentRoot = [[fm URLsForDirectory:NSDocumentDirectory
+                                      inDomains:NSUserDomainMask] objectAtIndex:0];
+    NSURL *url = [documentRoot URLByAppendingPathComponent:fileName];
+    
+    [data writeToURL:url atomically:YES];
+
+    // completionHandlerを実行
+    [completionTarget performSelector:completionSelector withObject:nil afterDelay:0.0f];
 }
+
