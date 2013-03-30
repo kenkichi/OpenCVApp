@@ -54,7 +54,13 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
-                    <navigationItem key="navigationItem" id="xOb-KN-1EH"/>
+                    <navigationItem key="navigationItem" id="xOb-KN-1EH">
+                        <barButtonItem key="rightBarButtonItem" title="Upload" id="pCm-qW-rkW">
+                            <connections>
+                                <action selector="uploadDidPress:" destination="0GM-UM-qQR" id="qo9-Pj-5rU"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <connections>
                         <outlet property="imageView" destination="hhz-5g-ZjC" id="uis-xX-NpP"/>
                     </connections>
@@ -113,6 +119,28 @@
             <point key="canvasLocation" x="-277" y="897"/>
         </scene>
     </scenes>
+    <classes>
+        <class className="CVImageTableViewController" superclassName="UITableViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/CVImageTableViewController.h"/>
+            <relationships>
+                <relationship kind="action" name="takePhoto:"/>
+            </relationships>
+        </class>
+        <class className="CVImageViewController" superclassName="UIViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/CVImageViewController.h"/>
+            <relationships>
+                <relationship kind="action" name="uploadDidPress:"/>
+                <relationship kind="outlet" name="imageView" candidateClass="UIImageView"/>
+            </relationships>
+        </class>
+        <class className="CVViewController" superclassName="UIViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/CVViewController.h"/>
+            <relationships>
+                <relationship kind="action" name="doDidPress:"/>
+                <relationship kind="outlet" name="imageView" candidateClass="UIImageView"/>
+            </relationships>
+        </class>
+    </classes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>
         <simulatedOrientationMetrics key="orientation"/>

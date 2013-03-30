@@ -11,4 +11,5 @@
 @interface CVImageViewController : UIViewController
 @property (weak, nonatomic) IBOutlet UIImageView *imageView;
 @property (strong, nonatomic) NSURL *selectedPictureURL;
+- (IBAction)uploadDidPress:(id)sender;
 @end
