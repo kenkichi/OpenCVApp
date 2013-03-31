@@ -1293,6 +1293,7 @@
 					"\"$(SRCROOT)/iOSMagick-6.8.1-0-libs\"/**",
 					"$(SRCROOT)/**",
 				);
+				OTHER_CFLAGS = "-Dmacintosh=1";
 				OTHER_LDFLAGS = (
 					"-lMagickCore",
 					"-lMagickWand",
@@ -1321,6 +1322,10 @@
 					"$(inherited)",
 					"\"$(SRCROOT)/iOSMagick-6.8.1-0-libs\"/**",
 					"$(SRCROOT)/**",
+				);
+				OTHER_CFLAGS = (
+					"-DNS_BLOCK_ASSERTIONS=1",
+					"-Dmacintosh=1",
 				);
 				OTHER_LDFLAGS = (
 					"-lMagickCore",
