@@ -10,6 +10,8 @@
 #import "CommonCrypto/CommonDigest.h"
 #import "EvernoteSDK.h"
 
+#import <wand/MagickWand.h>
+
 @interface CVImageViewController ()
 
 @end
@@ -43,7 +45,68 @@
 }
 
 - (IBAction)uploadDidPress:(id)sender {
-    [self sendEvernote:@"hello" withUIImage:self.imageView.image];
+//    [self sendEvernote:@"hello" withUIImage:self.imageView.image];
+    self.imageView.image = [self hoge:self.imageView.image];
+    NSLog(@"done");
+}
+
+- (UIImage *)hoge:(UIImage *)image
+{
+    NSData *data = UIImageJPEGRepresentation(image, 0.1);
+    NSString *inputPath = [NSTemporaryDirectory() stringByAppendingString:@"/input"];
+    [data writeToFile:inputPath atomically:YES];
+//    NSString *outputPath = [NSTemporaryDirectory() stringByAppendingString:@"/output"];
+    NSString *outputPath = [NSTemporaryDirectory() stringByAppendingString:@"/input"];
+    [self convertFrom:inputPath to:outputPath];
+    NSData *resultData = [NSData dataWithContentsOfFile:outputPath];
+    UIImage *resultImage = [UIImage imageWithData:resultData];
+    return resultImage;
+}
+
+- (void)convertFrom:(NSString *)inputPath to:(NSString *)outputPath
+{
+#define ThrowWandException(wand) \
+{ \
+char \
+*description; \
+\
+ExceptionType \
+severity; \
+\
+description=MagickGetException(wand,&severity); \
+(void) fprintf(stderr,"%s %s %lu %s\n",GetMagickModule(),description); \
+description=(char *) MagickRelinquishMemory(description); \
+exit(-1); \
+}
+    
+    MagickBooleanType
+    status;
+    
+    MagickWand
+    *magick_wand;
+    
+    /*
+     Read an image.
+     */
+    MagickWandGenesis();
+    magick_wand=NewMagickWand();
+    status=MagickReadImage(magick_wand, [inputPath cStringUsingEncoding:NSUTF8StringEncoding]);
+    if (status == MagickFalse)
+        ThrowWandException(magick_wand);
+    /*
+     Turn the images into a thumbnail sequence.
+     */
+    MagickResetIterator(magick_wand);
+    while (MagickNextImage(magick_wand) != MagickFalse)
+        MagickResizeImage(magick_wand,106,80,LanczosFilter,1.0);
+    /*
+     Write the image then destroy it.
+     */
+    status=MagickWriteImages(magick_wand, [outputPath cStringUsingEncoding:NSUTF8StringEncoding], MagickTrue);
+    if (status == MagickFalse)
+        ThrowWandException(magick_wand);
+    magick_wand=DestroyMagickWand(magick_wand);
+    MagickWandTerminus();
 }
 
 - (void)sendEvernote:(NSString *)sendText withUIImage:(UIImage *)sendImage
